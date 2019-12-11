@@ -1,4 +1,4 @@
-import { NodeConfig, Node } from './lib/node';
+import { NodeConfig, Node } from './node';
 
 export class NodeManager {
     private nodes: Node[]

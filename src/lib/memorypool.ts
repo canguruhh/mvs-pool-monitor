@@ -1,8 +1,8 @@
 import { Transaction } from '../interfaces/transaction.interface'
 
 export interface MemoryPoolRemoval {
-    affected: number
-    map: Boolean | Boolean[]
+    count: number
+    map: string[]
 }
 
 export class MemoryPool {
@@ -17,28 +17,28 @@ export class MemoryPool {
         return this.content.set(transaction.hash, transaction)
     }
 
-    remove(target: string | any[]): MemoryPoolRemoval {
+    remove(target: string | Array<string|Transaction>): MemoryPoolRemoval {
         const response = {
             map: typeof target === 'string' ? [this.removeSingle(target)] : this.removeMany(target),
         }
         return {
             ...response,
-            affected: response.map.reduce((k, v) => v ? ++k : k, 0)
+            count: response.map.reduce((k, v) => v !== undefined ? ++k : k, 0)
         }
     }
 
-    private removeMany(hashes: Array<string | Transaction>): Boolean[] {
+    private removeMany(hashes: Array<string | Transaction>): string[] {
         return hashes.map(entry => {
             if (typeof entry === 'string') {
                 return this.removeSingle(entry)
             } else {
                 return this.removeSingle(entry.hash)
             }
-        })
+        }).filter(v=>v!==undefined)
     }
 
-    private removeSingle(hash: string): Boolean {
-        return this.content.delete(hash)
+    private removeSingle(hash: string): string {
+        return this.content.delete(hash) ? hash : undefined
     }
 
     get(hash: string) {

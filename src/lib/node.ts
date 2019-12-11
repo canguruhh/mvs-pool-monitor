@@ -15,8 +15,8 @@ export interface NodeConfig {
     onClose?: () => void
     onConnect?: (connection?: connection, node?: Node) => void
 
-    onTransaction?: (transaction: Transaction, affectedPoolTransactions?: number, node?: Node) => void
-    onBlock?: (block: Block, affectedPoolTransactions?: number, node?: Node) => void
+    onTransaction?: (transaction: Transaction, affectedPoolTransactions?: MemoryPoolRemoval, node?: Node) => void
+    onBlock?: (block: Block, affectedPoolTransactions?: MemoryPoolRemoval, node?: Node) => void
 }
 
 export class Node {
@@ -118,7 +118,7 @@ export class Node {
     private receiveBlock(block: Block, event: string) {
         let affectedTransactions
         if (this.config.memoryPool) {
-            affectedTransactions = this.config.memoryPool.remove(block.transactions).affected
+            affectedTransactions = this.config.memoryPool.remove(block.transactions)
         }
         if (this.config.onBlock) {
             this.config.onBlock(block, affectedTransactions, this)
@@ -126,11 +126,15 @@ export class Node {
     }
 
     private receiveTransaction(transaction: Transaction, event: string) {
-        let affectedPoolTransactions = 0
+        let affectedPoolTransactions: MemoryPoolRemoval = {
+            count: 0,
+            map: []
+        }
         if (transaction.height === 0) {
             if (this.config.memoryPool) {
                 this.config.memoryPool.add(transaction)
-                affectedPoolTransactions = 1
+                affectedPoolTransactions.count = 1
+                affectedPoolTransactions.map = [transaction.hash]
             }
         }
         if (this.config.onTransaction) {
