@@ -1,0 +1,31 @@
+{
+    "compilerOptions": {
+        // The output module type (in your .js files). Node uses commonjs, so that is what we use
+        "module": "commonjs",
+        // Allows usage of an alternate module import syntax: import foo from 'foo';
+        "esModuleInterop": true,
+        // The output language level. Node supports ES6, so we can target that here
+        "target": "es6",
+        // Enables a stricter setting which throws errors when something has a default any value
+        "noImplicitAny": true,
+        // TypeScript attempts to mimic Node's module resolution strategy.
+        "moduleResolution": "node",
+        // We want source maps to be output along side our JavaScript
+        "sourceMap": true,
+        // Location to output .js files after compilation
+        "outDir": "dist",
+        "baseUrl": ".",
+        "paths": {
+            "*": [
+                "node_modules/*",
+                "src/types/*"
+            ]
+        }
+    },
+    "include": [
+        "src/**/*"
+    ],
+    "exclude": [
+        "node_modules"
+    ]
+}

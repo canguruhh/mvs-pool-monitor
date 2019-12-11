@@ -1,0 +1,19 @@
+{
+  "name": "mvsd-watch",
+  "version": "0.0.1",
+  "description": "",
+  "main": "dist/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Sven Mutzl",
+  "license": "MIT",
+  "dependencies": {
+    "log4js": "^6.1.0",
+    "websocket": "^1.0.31"
+  },
+  "devDependencies": {
+    "@types/log4js": "^2.3.5",
+    "@types/websocket": "^1.0.0"
+  }
+}
