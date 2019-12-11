@@ -7,16 +7,16 @@ import { getLogger } from 'log4js';
 
 export interface NodeConfig {
     name?: string
-    host: string
+    host?: string
 
     logger?: Logger
     memoryPool?: MemoryPool
     onError?: (message: string) => void
     onClose?: () => void
-    onConnect?: (connection?: connection) => void
+    onConnect?: (connection?: connection, node?: Node) => void
 
-    onTransaction?: (transaction: Transaction, affectedPoolTransactions?: number) => void
-    onBlock?: (block: Block, affectedPoolTransactions?: number) => void
+    onTransaction?: (transaction: Transaction, affectedPoolTransactions?: number, node?: Node) => void
+    onBlock?: (block: Block, affectedPoolTransactions?: number, node?: Node) => void
 }
 
 export class Node {
@@ -39,7 +39,7 @@ export class Node {
         this.client.on('connect', (connection) => {
             this.connection = connection
             if (this.config.onConnect) {
-                this.config.onConnect(connection)
+                this.config.onConnect(connection, this)
             }
             this.connected = true
             connection.on('error', (error) => {
@@ -121,7 +121,7 @@ export class Node {
             affectedTransactions = this.config.memoryPool.remove(block.transactions).affected
         }
         if (this.config.onBlock) {
-            this.config.onBlock(block, affectedTransactions)
+            this.config.onBlock(block, affectedTransactions, this)
         }
     }
 
@@ -134,7 +134,7 @@ export class Node {
             }
         }
         if (this.config.onTransaction) {
-            this.config.onTransaction(transaction, affectedPoolTransactions)
+            this.config.onTransaction(transaction, affectedPoolTransactions, this)
         }
     }
 
